@@ -1,7 +1,9 @@
 namespace homeworkGuessNumber
 {
+     
     public partial class Form1 : Form
     {
+        private static Random random = new Random();
         private int[] answer;
         private List<string> result;
 
@@ -77,7 +79,6 @@ namespace homeworkGuessNumber
         //創建不重複隨機數
         private int[] CreatAnswer()
         {
-            Random random = new Random();
             int[] answer = new int[4];
 
             for (int i = 0; i <= 3; i++)
@@ -89,7 +90,7 @@ namespace homeworkGuessNumber
                     if (answer[j] == answer[i])
                     {
                         answer[i] = random.Next(1, 10);
-                        j = 0;
+                        j = -1;
                     }
                 }
             }
