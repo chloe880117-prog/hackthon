@@ -1,4 +1,7 @@
-﻿namespace homeworkTax
+﻿using homework006Tax;
+using System.Reflection.Emit;
+
+namespace homeworkTax
 {
     internal class Program
     {
@@ -6,38 +9,45 @@
         {
             Console.WriteLine("請輸入您的年收入：");
             decimal input = decimal.Parse(Console.ReadLine());
-            decimal tax1 = (decimal)(540000 * 0.05);
-            decimal tax2 = (decimal)((1210001 - 540001) * 0.12);
-            decimal tax3 = (decimal)((2420001 - 1210001) * 0.20);
-            decimal tax4 = (decimal)((4530001 - 2420001) * 0.30);
-            decimal tax5 = (decimal)((10310001 - 4530001) * 0.40);
 
-            decimal result = 0;
-            if (input <= 540000)
-            {
-                result = input * (decimal)0.05;
-            }
-            else if (540001 <= input & input <= 1210000)
-            {
-                result = ((input - 540000) * (decimal)0.12) + tax1;
-            }
-            else if (1210001 <= input & input <= 2420000)
-            {
-                result = ((input - 1210000)*(decimal)0.20) + tax1 + tax2;
-            }
-            else if (2420001 <= input & input <= 4530000)
-            {
-                result = ((input -2420000)*(decimal)0.30)+tax1+tax2+tax3;
-            }
-            else if (4530001 <= input & input <= 10310000)
-            {
-                result = ((input-4530000)*(decimal)0.40)+tax1+tax2+tax3+tax4;
-            }
-            else if (input >= 10310001)
-            {
-                result = ((input-10310000)*(decimal)0.50)+tax1+tax2+tax3+tax4+tax5;
-            }
+            List<Tax> taxList = CreateLevelList();
+
+            var myTax = taxList.FirstOrDefault((x) => x.minTax <= input && x.maxTax >= input
+            , new Tax { minTax = 0, maxTax = 0, taxRate = 0 });
+
+            decimal result = CountTax(myTax.minTax,myTax.maxTax,myTax.taxRate,myTax.taxLevel);
             Console.WriteLine(result);
+
+
+
+            decimal CountTax(decimal minTax, decimal maxTax, decimal taxRate, int taxLevel)
+            {
+                decimal taxMoney = 0m;
+                decimal fixedTax = 0m;
+
+                for (int level = 0; level < taxLevel; level++)
+                {
+                    fixedTax += taxList[level].taxRate * ((taxList[level].maxTax + 1m - taxList[level].minTax));
+                }
+
+                taxMoney = taxRate * (input - minTax+1) + fixedTax;
+
+                return taxMoney;
+            }
+
         }
+        static List<Tax> CreateLevelList()
+        {
+            return new List<Tax>()
+            {
+                new Tax{minTax = 1m,maxTax = 540000m,taxRate = 0.05m,taxLevel = 0},
+                new Tax{minTax = 540001m,maxTax = 1210000m,taxRate = 0.12m,taxLevel = 1},
+                new Tax{minTax =1210001m,maxTax = 2420000m,taxRate = 0.20m,taxLevel = 2},
+                new Tax{minTax = 2420001m,maxTax = 4530000m,taxRate = 0.30m,taxLevel = 3},
+                new Tax{minTax =4530001m,maxTax = 10310000m,taxRate =0.40m,taxLevel = 4},
+                new Tax{minTax = 10310001m,maxTax = decimal.MaxValue,taxRate =0.50m,taxLevel = 5},
+            };
+        }
+
     }
 }
