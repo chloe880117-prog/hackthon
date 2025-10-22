@@ -5,36 +5,34 @@ namespace homeworkTax
 {
     internal class Program
     {
+        private static decimal input;
+        private  static List<Tax> taxList;
         static void Main(string[] args)
         {
             Console.WriteLine("請輸入您的年收入：");
-            decimal input = decimal.Parse(Console.ReadLine());
-
-            List<Tax> taxList = CreateLevelList();
+            input = decimal.Parse(Console.ReadLine());
+            taxList = CreateLevelList();
 
             var myTax = taxList.FirstOrDefault((x) => x.minTax <= input && x.maxTax >= input
             , new Tax { minTax = 0, maxTax = 0, taxRate = 0 });
 
             decimal result = CountTax(myTax.minTax,myTax.maxTax,myTax.taxRate,myTax.taxLevel);
             Console.WriteLine(result);
+        }
 
+        static decimal CountTax(decimal minTax, decimal maxTax, decimal taxRate, int taxLevel)
+        {
+            decimal taxMoney = 0m;
+            decimal fixedTax = 0m;
 
-
-            decimal CountTax(decimal minTax, decimal maxTax, decimal taxRate, int taxLevel)
+            for (int level = 0; level < taxLevel; level++)
             {
-                decimal taxMoney = 0m;
-                decimal fixedTax = 0m;
-
-                for (int level = 0; level < taxLevel; level++)
-                {
-                    fixedTax += taxList[level].taxRate * ((taxList[level].maxTax + 1m - taxList[level].minTax));
-                }
-
-                taxMoney = taxRate * (input - minTax+1) + fixedTax;
-
-                return taxMoney;
+                fixedTax += taxList[level].taxRate * ((taxList[level].maxTax + 1m - taxList[level].minTax));
             }
 
+            taxMoney = taxRate * (input - minTax + 1) + fixedTax;
+
+            return taxMoney;
         }
         static List<Tax> CreateLevelList()
         {
