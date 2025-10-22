@@ -34,6 +34,7 @@ namespace homeworkTax
 
             return taxMoney;
         }
+
         static List<Tax> CreateLevelList()
         {
             return new List<Tax>()
