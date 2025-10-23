@@ -8,8 +8,10 @@ using System.Windows.Forms;
 namespace WinFormsApp1
 {
 
-    internal class Class1
+    internal class StarsDate
     {
+        public int startDay { get; set; }
+        public int endDay { get; set; }
 
     }
 }
